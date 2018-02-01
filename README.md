@@ -1,27 +1,27 @@
 # SparseInterp
 
 
-A package for function approximation on sparse grids.
+A package for function approximation (interpolation) on [Smolyak](https://en.wikipedia.org/wiki/Sparse_grid) grids, useful in medium dimensions and when function evaluation is expensive. [SparseGrids](https://github.com/robertdj/SparseGrids.jl) provides a similar approach for quadrature.
 
 Grids are constructed using the:
 ```
 NGrid(L::Vector{Int}, bounds::Array{Float64,2} = [zeros(..);ones(..)]; B = Linear)
 ``` 
 
-`L`: An `n` dimensional vector where each element specifies the grid 'fineness' in each dimension.
+`L`: An `D` dimensional vector where each element specifies the grid resolution in each dimension, a higher value generates more points.
 
-`bounds`: A [2 x `n`] array specifying the lower and upper bounds in each dimension, defaults to [0, 1]<sup>n</sup>.
+`bounds`: A [2 x `D`] array specifying the lower and upper bounds in each dimension, defaults to [0, 1]<sup>n</sup>.
 
 `B`: This specifies the type of basis function used. Defaults to a `Linear` hat function. A `Quadratic` basis function can also be used if the function being approximated is sufficiently smooth.
 
-`values(G::NGrid)`: returns an array where each row is a grid node.
+`values(G::NGrid)`: returns an array of size `N x D` at which function values must be known, each row represents a point in `N` dimensional space.
 
 ### Interpolation
 `NGrid` instances are callable taking two arguments:
 ```
 G(A::Vector{Float64}, x::Array{Float64})
 ```
-Where `A` are the function values at each grid node and `x` the points to be evaluated.
+Where `A` are the values of the function being approximated at each grid point and `x` (size `m x D`) are the `m` points to be approximated.
 
 
 
@@ -47,4 +47,3 @@ scatter(x[:], y[:], z - z0)
 
 ### Note
 The interpolation function makes use of the `:jl_threading_run` which scales well on tested machines but is an experimental feature...
-<!--![](doc/g55.png)-->
